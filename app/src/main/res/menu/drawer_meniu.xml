@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group >
+
+        <item
+            android:id="@+id/nav_places"
+            android:icon="@drawable/ic_baseline_place_24"
+            android:title="Places"></item>
+        <item
+            android:id="@+id/nav_all_posts"
+            android:icon="@drawable/ic_baseline_filter_list_24"
+            android:title="All posts"></item>
+        <item
+            android:id="@+id/nav_google_drive"
+            android:icon="@drawable/ic_baseline_sync_24"
+            android:title="Sync with Google Drive"></item>
+    </group>
+</menu>
