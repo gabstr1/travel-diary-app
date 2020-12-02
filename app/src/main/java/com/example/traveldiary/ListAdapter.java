@@ -28,13 +28,14 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> im
     private RecyclerViewClickInterface recyclerViewClickInterface;
 
     //create constructor
-    public ListAdapter(Activity context, List<Item> items, RecyclerViewClickInterface recyclerViewClickInterface){
+    public ListAdapter(Activity context, List<Item> items, RecyclerViewClickInterface recyclerViewClickInterface) {
         this.context = context;
         this.items = items;
         this.itemsAll = new ArrayList<>(items);
         this.recyclerViewClickInterface = recyclerViewClickInterface;
         notifyDataSetChanged();
     }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -59,7 +60,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> im
         holder.photo.setImageBitmap(setPic(item));
     }
 
-    private Bitmap setPic(Item item){
+    private Bitmap setPic(Item item) {
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
 
@@ -69,7 +70,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> im
         int photoH = bmOptions.outHeight;
 
         // Determine how much to scale down the image
-        int scaleFactor = Math.max(1, Math.min(photoW/150, photoH/150));
+        int scaleFactor = Math.max(1, Math.min(photoW / 150, photoH / 150));
 
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
@@ -100,13 +101,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> im
 
             String charString = charSequence.toString();
 
-            if(charString.isEmpty()){
+            if (charString.isEmpty()) {
                 filteredList.addAll(itemsAll);
             } else {
-                for (Item item : itemsAll){
-                    if(item.getDetails().toLowerCase().contains(charString.toLowerCase())
+                for (Item item : itemsAll) {
+                    if (item.getDetails().toLowerCase().contains(charString.toLowerCase())
                             || item.getMonthName().toLowerCase().contains(charString.toLowerCase())
-                            || item.getDescription().toLowerCase().contains(charString.toLowerCase())){
+                            || item.getDescription().toLowerCase().contains(charString.toLowerCase())) {
                         filteredList.add(item);
                     }
                 }
@@ -126,7 +127,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> im
         }
     };
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         //Initialize variable
         TextView description, details, monthName, dayNumber, date;
         ImageView photo;

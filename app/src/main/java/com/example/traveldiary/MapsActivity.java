@@ -70,7 +70,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         database = RoomDB.getInstance(this);
         allCoords = database.myDao().getAllCoordinates();
         allCoords.toArray();
-        for (int i=0; i<allCoords.size(); i++){
+        for (int i = 0; i < allCoords.size(); i++) {
             mMap.addMarker(new MarkerOptions().position(new LatLng(allCoords.get(i).getLatitude(),
                     allCoords.get(i).getLongitude())).title("My Marker"));
             Log.i("COORDS", allCoords.get(i).getLatitude().toString());
@@ -127,10 +127,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.list:
                         startActivity(new Intent(getApplicationContext()
-                                ,ListActivity.class));
+                                , ListActivity.class));
                         overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
                         return true;
                     case R.id.map:

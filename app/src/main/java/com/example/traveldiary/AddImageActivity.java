@@ -2,6 +2,7 @@ package com.example.traveldiary;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
@@ -23,23 +24,19 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class AddImage extends AppCompatActivity implements LocationListener {
+public class AddImageActivity extends AppCompatActivity implements LocationListener {
 
     private Context context = this;
     //widgets
@@ -48,6 +45,7 @@ public class AddImage extends AppCompatActivity implements LocationListener {
     Bitmap bitmap;
     FloatingActionButton addButton;
     TextInputEditText descriptionText;
+    Toolbar toolbar;
 
     //vars
     RoomDB database;
@@ -68,8 +66,6 @@ public class AddImage extends AppCompatActivity implements LocationListener {
 
         nDialog.dismiss();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         Animation animRotate = AnimationUtils.loadAnimation(this, R.anim.anim_rotate);
         clockIcon = findViewById(R.id.clockIcon48);
         clockIcon.startAnimation(animRotate);
@@ -78,6 +74,7 @@ public class AddImage extends AppCompatActivity implements LocationListener {
         longitudeText = findViewById(R.id.longitudeText);
 
 
+        toolbar = findViewById(R.id.toolbar);
         imageView = findViewById(R.id.imageViewEdit);
         currentTimeText = findViewById(R.id.currentDateTime);
         monthDay = findViewById(R.id.monthDay);
@@ -115,6 +112,7 @@ public class AddImage extends AppCompatActivity implements LocationListener {
         monthDay.setText(currentMonth + " " + dayOfMonth);
 
         getLocation();
+        setSupportActionBar(toolbar);
 
     }
 
@@ -125,19 +123,19 @@ public class AddImage extends AppCompatActivity implements LocationListener {
 
         coordinates = new Coordinates(lat, lng);
 
-            descriptionText = findViewById(R.id.descriptionText);
-            details = currentTimeText.getText().toString().trim() + " • " + locationText.getText().toString().trim();
-            database.myDao().addItem(new Item(currentPhotoPath, descriptionText.getText().toString().trim(), details, currentMonth, dayOfMonth, date, coordinates));
+        descriptionText = findViewById(R.id.descriptionText);
+        details = currentTimeText.getText().toString().trim() + " • " + locationText.getText().toString().trim();
+        database.myDao().addItem(new Item(currentPhotoPath, descriptionText.getText().toString().trim(), details, currentMonth, dayOfMonth, date, coordinates));
 
-            listIntent = new Intent(context, ListActivity.class);
+        listIntent = new Intent(context, ListActivity.class);
 
-            overridePendingTransition(0, R.anim.anim_scale_down);
-            nDialog.setIndeterminate(false);
-            nDialog.setCancelable(true);
-            nDialog.setTitle("Creating new post");
-            nDialog.setMessage("Sending your data");
-            nDialog.show();
-            startActivity(listIntent);
+        overridePendingTransition(0, R.anim.anim_scale_down);
+        nDialog.setIndeterminate(false);
+        nDialog.setCancelable(true);
+        nDialog.setTitle("Creating new post");
+        nDialog.setMessage("Sending your data");
+        nDialog.show();
+        startActivity(listIntent);
     }
 
     View.OnClickListener addButtonClick = new View.OnClickListener() {
@@ -157,12 +155,11 @@ public class AddImage extends AppCompatActivity implements LocationListener {
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             try {
                 locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5, AddImage.this);
-            }catch (Exception e){
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5, AddImageActivity.this);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-        else {
+        } else {
             //Ask for permission
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
@@ -174,7 +171,7 @@ public class AddImage extends AppCompatActivity implements LocationListener {
         Log.i("LOCATION", "onLocationChanged() : " + location.getLatitude() + "," + location.getLongitude());
         try {
             //Initialize geoCoder
-            Geocoder geocoder = new Geocoder(AddImage.this, Locale.US);
+            Geocoder geocoder = new Geocoder(AddImageActivity.this, Locale.US);
             //Initialize address list
             List<Address> addresses = geocoder.getFromLocation(
                     location.getLatitude(), location.getLongitude(), 1);
@@ -204,7 +201,7 @@ public class AddImage extends AppCompatActivity implements LocationListener {
             longitudeText.setText(lng);
             latitudeText.setText(lat);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

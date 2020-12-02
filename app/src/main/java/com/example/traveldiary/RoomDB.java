@@ -14,9 +14,9 @@ public abstract class RoomDB extends RoomDatabase {
     //Define database name
     private static String DATABASE_NAME = "database";
 
-    public synchronized static  RoomDB getInstance(Context context){
+    public synchronized static RoomDB getInstance(Context context) {
         //check condition
-        if(database == null){
+        if (database == null) {
             //when database is null, initialize database
             database = Room.databaseBuilder(context.getApplicationContext(),
                     RoomDB.class, DATABASE_NAME)

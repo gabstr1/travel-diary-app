@@ -45,7 +45,11 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:weightSum="100"
-                    tools:context=".DisplayListItem">
+                    tools:context=".DisplayListItemActivity">
+
+                        <include
+                            android:id="@+id/toolbar"
+                            layout="@layout/toolbar" />
 
 
                         <ImageView
@@ -130,6 +134,16 @@
                                     android:layout_height="wrap_content"
                                     android:hint="Edit description" />
                         </com.google.android.material.textfield.TextInputLayout>
+
+                        <Button
+                            android:id="@+id/button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Button" />
+
+                        <Space
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp" />
 
                 </LinearLayout>
         </ScrollView>

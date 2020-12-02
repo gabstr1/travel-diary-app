@@ -36,6 +36,10 @@
         android:roundIcon="@mipmap/ic_app_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".SyncActivity"
+            android:parentActivityName=".HomeActivity">
+        </activity>
+        <activity android:name=".GoogleLoginActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -67,10 +71,10 @@
                 android:resource="@android:drawable/ic_menu_search" />
         </activity>
         <activity
-            android:name=".DisplayListItem"
+            android:name=".DisplayListItemActivity"
             android:parentActivityName=".ListActivity" />
         <activity
-            android:name=".AddImage"
+            android:name=".AddImageActivity"
             android:parentActivityName=".HomeActivity" />
         <activity android:name=".MapsActivity" />
         <activity android:name=".SplashActivity">

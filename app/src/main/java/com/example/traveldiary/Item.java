@@ -81,8 +81,9 @@ public class Item implements Parcelable, Comparable<Item> {
     };
 
 
-
-    public int getItemId() { return itemId; }
+    public int getItemId() {
+        return itemId;
+    }
 
     public void setItemId(int itemId) {
         this.itemId = itemId;
@@ -128,9 +129,13 @@ public class Item implements Parcelable, Comparable<Item> {
         this.monthName = monthName;
     }
 
-    public String getDate() { return date; }
+    public String getDate() {
+        return date;
+    }
 
-    public void setDate(String date) { this.date = date; }
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     @Override
     public int describeContents() {

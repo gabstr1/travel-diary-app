@@ -30,6 +30,7 @@
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:scaleType="centerCrop"
+                    android:paddingTop="6dp"
                     app:srcCompat="@drawable/picture"
                     />
 
@@ -40,7 +41,6 @@
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:paddingLeft="8dp"
-                android:paddingTop="6dp"
                 android:paddingRight="8dp"
                 android:paddingBottom="8dp">
 

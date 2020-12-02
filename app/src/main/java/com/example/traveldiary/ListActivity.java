@@ -2,6 +2,7 @@ package com.example.traveldiary;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,12 +33,16 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewClick
     List<Item> dataList;
     RoomDB database;
     LinearLayoutManager linearLayoutManager;
+    Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
         myRecyclerView = findViewById(R.id.listView);
 
+        toolbar = findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         database = RoomDB.getInstance(this);
@@ -80,7 +85,7 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewClick
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.options_menu, menu);
+        inflater.inflate(R.menu.search_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.search_view);
         SearchView searchView = (SearchView) searchItem.getActionView();
 
@@ -100,7 +105,7 @@ public class ListActivity extends AppCompatActivity implements RecyclerViewClick
 
     @Override
     public void onItemClick(int position, ImageView sharedImage) {
-        Intent intent = new Intent(this, DisplayListItem.class);
+        Intent intent = new Intent(this, DisplayListItemActivity.class);
 
         intent.putExtra("selected_item", dataList.get(position));
         ActivityOptionsCompat options = ActivityOptionsCompat.

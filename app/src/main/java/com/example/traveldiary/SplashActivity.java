@@ -30,7 +30,7 @@ public class SplashActivity extends AppCompatActivity {
         logoView = findViewById(R.id.logoView);
         logoView.startAnimation(slideFromTop);
 
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

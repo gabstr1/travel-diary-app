@@ -2,19 +2,20 @@ package com.example.traveldiary;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
@@ -26,73 +27,123 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.List;
 import java.util.Locale;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, BottomNavigationView.OnNavigationItemSelectedListener {
 
     public static final int CAMERA_PERM_CODE = 101;
-    public static final int CAMERA_REQ_CODE = 1;
     public static final int GALLERY_REQ_CODE = 1000;
     public static final int GALLERY_PERM_CODE = 1001;
 
-    private ImageButton cameraButton, galleryButton;
+    //Widgets
+    ImageButton cameraButton, galleryButton;
     BottomNavigationView bottomNavigationView;
-    String currentTime, month, monthDay, currentPhotoPath, dateString, country, district, street;
+    DrawerLayout drawerLayout;
+    NavigationView drawerNavigationView;
+    Toolbar toolbar;
     TextView textView;
+
+    //Vars
+    String currentTime, month, monthDay, currentPhotoPath, dateString;
     Date d;
     private Context context = this;
-
-    FusedLocationProviderClient fusedLocationProviderClient;
-    Location location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Initialize fusedLocationProviderClient
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        /*-------------Widgets-------------------------*/
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.home);
+        textView = findViewById(R.id.textView2);
+        cameraButton = findViewById(R.id.cameraButton);
+        galleryButton = findViewById(R.id.galleryButton);
+        toolbar = findViewById(R.id.toolbar);
 
+        /*-------------Hooks-------------------------*/
+        drawerLayout = findViewById(R.id.drawer_layout);
+        drawerNavigationView = findViewById(R.id.nav_view);
+
+        /*-------------Toolbar-------------------------*/
+        setSupportActionBar(toolbar);
+
+        /*-------------Navigation Drawer Meniu-------------------------*/
+        drawerNavigationView.bringToFront();
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        drawerNavigationView.setNavigationItemSelectedListener(this);
+
+        /*-------------Animations-------------------------*/
         Animation zoomIn = AnimationUtils.loadAnimation(this, R.anim.zoom_in);
         zoomIn.reset();
-
-        final Animation animAlpha = AnimationUtils.loadAnimation(this, R.anim.anim_alpha);
-
-        textView = findViewById(R.id.textView2);
+        galleryButton.startAnimation(zoomIn);
         textView.startAnimation(zoomIn);
-
-        cameraButton = findViewById(R.id.cameraButton);
         cameraButton.startAnimation(zoomIn);
-        cameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+
+        /*-------------Click Listeners-------------------------*/
+        cameraButton.setOnClickListener(this);
+        galleryButton.setOnClickListener(this);
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.list:
+            case R.id.nav_all_posts:
+                startActivity(new Intent(getApplicationContext()
+                        , ListActivity.class));
+                overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
+                return true;
+            case R.id.map:
+            case R.id.nav_places:
+                startActivity(new Intent(getApplicationContext()
+                        , MapsActivity.class));
+                overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
+                return true;
+            case R.id.home:
+                return true;
+            case R.id.nav_google_drive:
+                startActivity(new Intent(getApplicationContext()
+                        , GoogleLoginActivity.class));
+                overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        Animation animAlpha = AnimationUtils.loadAnimation(this, R.anim.anim_alpha);
+        switch (v.getId()) {
+            case R.id.cameraButton:
                 v.startAnimation(animAlpha);
                 askCameraPermission();
-            }
-        });
-
-        galleryButton = findViewById(R.id.galleryButton);
-        galleryButton.startAnimation(zoomIn);
-        galleryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                break;
+            case R.id.galleryButton:
                 v.startAnimation(animAlpha);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -109,31 +160,8 @@ public class HomeActivity extends AppCompatActivity {
                     //system is less than marshmallow
                     pickImageFromGallery();
                 }
-            }
-        });
+        }
 
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.home);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.list:
-                        startActivity(new Intent(getApplicationContext()
-                                , ListActivity.class));
-                        overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
-                        return true;
-                    case R.id.map:
-                        startActivity(new Intent(getApplicationContext()
-                                , MapsActivity.class));
-                        overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
-                        return true;
-                    case R.id.home:
-                        return true;
-                }
-                return false;
-            }
-        });
     }
 
     private void pickImageFromGallery() {
@@ -184,26 +212,6 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Write Location information to image.
-     *
-     * @param : image absolute path
-     * @return : location information
-     */
-    public void MarkGeoTagImage(String imagePath, Location location) {
-        try {
-            ExifInterface exif = new ExifInterface(imagePath);
-
-            exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, String.valueOf(location.getLatitude()));
-            exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, String.valueOf(location.getLongitude()));
-
-            Log.i("GEOTAG", "geotags latitude: " + exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE));
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -227,55 +235,10 @@ public class HomeActivity extends AppCompatActivity {
         return cursor.getString(column_index);
     }
 
-    private void getLocation() {
-
-        //Check for permissions
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            //If permission is granted
-            fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-                @Override
-                public void onComplete(@NonNull Task<Location> task) {
-                    //Initialize location
-                    location = task.getResult();
-                    Log.i("LOCATION", " location: " + location);
-                    if (location != null) {
-                        try {
-                            //Initialize geoCoder
-                            Geocoder geocoder = new Geocoder(HomeActivity.this, Locale.US);
-                            //Initialize address list
-                            List<Address> addresses = geocoder.getFromLocation(
-                                    location.getLatitude(), location.getLongitude(), 1);
-
-                            Address address = addresses.get(0);
-
-                            country = address.getCountryName();
-                            district = address.getAdminArea();
-                            street = address.getThoroughfare();
-
-                            Log.i("ADDRESS", "Country: " + country);
-                            Log.i("ADDRESS", "district: " + address.getAdminArea());
-                            Log.i("ADDRESS", "street: " + address.getThoroughfare());
-
-                            //MarkGeoTagImage(currentPhotoPath, location);
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            });
-        } else {
-            //Ask for permission
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Intent intent = new Intent(this, AddImage.class);
+        Intent intent = new Intent(this, AddImageActivity.class);
 
         if (resultCode == RESULT_OK) {
 
